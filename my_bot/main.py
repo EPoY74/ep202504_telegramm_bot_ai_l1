@@ -16,7 +16,23 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     datefmt="%d-%m-%Y %H:%M:%S",
 )
-load_dotenv()
+
+class Bot_Config:
+    """
+    Загружает конфигурацию Телеграмм бота
+    """
+    def __init__(self):
+        load_dotenv()
+        try:
+            self.BOT_TOKEN: str|None = str(os.getenv("BOT_TOKEN"))
+        except ValueError as err:
+            logging.critical(f"Отсутствует BOT_TOKEN в .env файле: {err}")
+            raise ValueError("Токен телеграм бота не найден") from err
+
+    
+
+
+
 bot = Bot(token=str(os.getenv("BOT_TOKEN")))
 dp = Dispatcher()
 
