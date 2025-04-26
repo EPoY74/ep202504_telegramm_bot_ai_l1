@@ -24,7 +24,7 @@ class Bot_Config:
     def __init__(self):
         load_dotenv()
         try:
-            self.BOT_TOKEN: str|None = str(os.getenv("BOT_TOKEN"))
+            self.BOT_TOKEN: str = str(os.getenv("BOT_TOKEN"))
         except ValueError as err:
             logging.critical(f"Отсутствует BOT_TOKEN в .env файле: {err}")
             raise ValueError("Токен телеграм бота не найден") from err
@@ -44,17 +44,44 @@ class Bot_Config:
                 raise ValueError(err_msg) from err   
 
 
+async def shutdown(dp: Dispatcher, bot: Bot):
+    """
+    Завершение телеграмм бота
+    """
 
-bot = Bot(token=str(os.getenv("BOT_TOKEN")))
-dp = Dispatcher()
+    logging.warning("Завершение работы телеграмм бота")
+    
+    try:
+        await dp.storage.close()
+    except Exception as err:
+        err_msg=f"Ошибка закрытия storage: {err}"
+        logging.error(err_msg)
+        raise Exception(err_msg) from Exception
 
+    try:
+        await bot.session.close()
+    except Exception as err:
+        err_msg = f"Ошибка закрытия сессии: {err}"
+        logging.error(err_msg)
+        raise Exception(err_msg) from Exception
 
 async def main():
     """
     Оcновная функция для запуска    
     """
-    
-    await dp.start_polling(bot)
+    config = Bot_Config()
+    bot = Bot(config.BOT_TOKEN)
+    dp = Dispatcher()
+
+    try:
+        logging.info("Запуск телеграм бота")
+        await dp.start_polling(bot)
+    except Exception as err:
+        err_msg = f"Ошибка при запуске бота: {err}"
+        logging.error(err_msg)
+        raise Exception(err_msg) from Exception
+    finally:
+        await shutdown(dp, bot)
 
 
 if __name__ == "__main__":
@@ -62,5 +89,12 @@ if __name__ == "__main__":
     Запуск кода в асинхронном виде
     """
 
-    logging.info("Запуск телеграм бота")
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except(KeyboardInterrupt, SystemExit) as err:
+        logging.info(f"Бот остановлен вручную: {err}")
+    except Exception as err:
+        err_msg = f"Критическая ошибка: {err}"
+        logging.critical(err_msg)
+        raise Exception(err_msg) from Exception
+
