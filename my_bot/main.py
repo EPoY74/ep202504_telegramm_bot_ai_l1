@@ -28,8 +28,20 @@ class Bot_Config:
         except ValueError as err:
             logging.critical(f"Отсутствует BOT_TOKEN в .env файле: {err}")
             raise ValueError("Токен телеграм бота не найден") from err
-
-    
+        bot_admins: str|None = os.getenv("ADMINS_ID")
+        if bot_admins:
+            try:
+                self.ADMINS_ID = [int(bot_admin_id.strip())
+                                   for bot_admin_id in bot_admins.split(",")
+                ]
+            except ValueError as err:
+                err_msg = (
+                    "Ошибка в формате ID админимстратора(ов)"
+                    f"(в т.ч. в .env - файле): {err}"
+                )
+                logging.error(err_msg)
+                self.ADMINS_ID = []
+                raise ValueError(err_msg) from err   
 
 
 
