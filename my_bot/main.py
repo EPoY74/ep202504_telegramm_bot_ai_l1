@@ -17,12 +17,24 @@ logging.basicConfig(
     datefmt="%d-%m-%Y %H:%M:%S",
 )
 
+
+class EnvLoadError(Exception):
+    """
+    Класс для пробрасывания исключений
+    """
+    pass
+
+
 class Bot_Config:
     """
     Загружает конфигурацию Телеграмм бота
     """
-    def __init__(self):
-        load_dotenv()
+    def __init__(self) -> None:
+        if not load_dotenv():
+            err_msg = ".env не загружен или не найден"
+            logging.warning(err_msg)
+            raise EnvLoadError(err_msg)
+
         try:
             self.BOT_TOKEN: str = str(os.getenv("BOT_TOKEN"))
         except ValueError as err:
