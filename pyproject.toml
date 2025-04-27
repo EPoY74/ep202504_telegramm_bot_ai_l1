@@ -1,5 +1,6 @@
 [tool.ruff]
 line-length = 79
+requires-python = ">= 3.11"
 
 [tool.ruff.format]
 quote-style = "double"
