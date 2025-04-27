@@ -2,6 +2,7 @@
 Основной файл телеграмм бота
 Автор: Евгений Петров
 Почта: p174@mail.ru
+@ep_20250446_edu_test_bot id=7891443548
 """
 
 import asyncio
@@ -11,6 +12,8 @@ from builtins import ExceptionGroup
 
 from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
+
+from handlers.user import router as user_router
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -103,6 +106,7 @@ async def main() -> None:
     config = Bot_Config()
     bot = Bot(config.BOT_TOKEN)
     dp = Dispatcher()
+    dp.include_router(user_router)
 
     try:
         logging.info("Запуск телеграм бота")
