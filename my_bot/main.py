@@ -3,16 +3,15 @@
 Автор: Евгений Петров
 Почта: p174@mail.ru
 @ep_20250446_edu_test_bot id=7891443548
+# from builtins import ExceptionGroup
 """
 
 import asyncio
 import logging
 import os
-from builtins import ExceptionGroup
 
 from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
-
 from handlers.user import router as user_router
 
 logging.basicConfig(
@@ -48,11 +47,11 @@ class Bot_Config:
             raise EnvLoadError(err_msg)
 
         try:
-            self.BOT_TOKEN: str = str(os.getenv("BOT_TOKEN"))
+            self.BOT_TOKEN: str = str(os.getenv("BOT_TOKEN", default=None))
         except ValueError as err:
             logging.critical(f"Отсутствует BOT_TOKEN в .env файле: {err}")
             raise ValueError("Токен телеграм бота не найден") from err
-        bot_admins: str | None = os.getenv("ADMINS_ID")
+        bot_admins: str | None = os.getenv("ADMINS_ID", default=None)
         if bot_admins:
             try:
                 self.ADMINS_ID = [
@@ -96,7 +95,11 @@ async def shutdown(dp: Dispatcher, bot: Bot) -> None:
                 logging.error(f"Ошибка при закрытии: {closed_item_status}")
                 result_shutdown_errors.append(closed_item_status)
         if len(result_shutdown_errors) > 0:
-            raise ExceptionGroup("Ошибки при закрытии бота", result_shutdown_errors)
+            raise ExceptionGroup(
+                "Ошибки при закрытии бота", result_shutdown_errors
+            )
+    if not result_shutdown_errors:
+        logging.info("Телеграм бот завершил работу корректно.")
 
 
 async def main() -> None:
@@ -123,12 +126,4 @@ if __name__ == "__main__":
     """
     Запуск скрипта в асинхронном виде
     """
-
-    try:
-        asyncio.run(main())
-    except (KeyboardInterrupt, SystemExit) as err:
-        logging.info(f"Бот остановлен вручную: {err}")
-    except Exception as err:
-        err_msg = f"Критическая ошибка: {err}"
-        logging.critical(err_msg)
-        raise Exception(err_msg) from Exception
+    asyncio.run(main())
