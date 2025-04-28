@@ -1,6 +1,8 @@
+[project]
+requires-python = ">= 3.11"
+
 [tool.ruff]
 line-length = 79
-requires-python = ">= 3.11"
 
 [tool.ruff.format]
 quote-style = "double"
@@ -9,7 +11,6 @@ quote-style = "double"
 indent-style = "space" 
 
 docstring-code-format = true
-
 
 [tool.ruff.lint]
 select = ["E", "F", "UP", "B", "SIM", "I", "A", "C", "T"]
