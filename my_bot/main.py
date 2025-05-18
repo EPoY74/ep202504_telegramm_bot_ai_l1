@@ -36,10 +36,8 @@ class Bot_Config:
 
     def __init__(self) -> None:
         """
-        Docstring for __init__
-
-        :param self: Description
-        :type self:
+        Загружает данные из переменных окружения для работы
+        телеграмм бота
         """
         if not load_dotenv():
             err_msg = ".env не загружен или не найден"
@@ -66,10 +64,6 @@ class Bot_Config:
                 logging.error(err_msg)
                 self.ADMINS_ID = []
                 raise ValueError(err_msg) from err
-
-    # @staticmethod
-    # def load_config() -> Bot_Config | None:
-    #     # ...
 
 
 async def shutdown(dp: Dispatcher, bot: Bot) -> None:
@@ -106,7 +100,7 @@ async def main() -> None:
     """
     Оcновная функция для запуска телеграм бота
     """
-    config = Bot_Config()
+    config = Bot_Config()   
     bot = Bot(config.BOT_TOKEN)
     dp = Dispatcher()
     dp.include_router(user_router)
