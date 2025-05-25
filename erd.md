@@ -2,10 +2,6 @@
 
 ```mermaid
 erDiagram
-    CUSTOMER ||--o{ ORDER : places
-    ORDER ||--|{ LINE_ITEM : contains
-    CUSTOMER }|..|{ DELIVERY_ADDRESS : uses
-
     КЛИЕНТ {
         int id
         string name
