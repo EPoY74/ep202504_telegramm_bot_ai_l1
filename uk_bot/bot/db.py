@@ -41,3 +41,8 @@ def create_async_session() -> async_sessionmaker[AsyncSession]:
         bind=engine, class_=AsyncSession, expire_on_commit=False
     )
     return SessionLocal
+
+
+# async def get_session():
+#     async with create_async_session()  as session:
+#         yield session
