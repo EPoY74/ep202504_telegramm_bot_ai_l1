@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 
 
 def load_uk_bot_configuration() -> dict[str, str]:
@@ -21,6 +21,12 @@ def load_uk_bot_configuration() -> dict[str, str]:
     """
     uk_bot_settings = load_bot_env()
     return uk_bot_settings
+
+class Base(DeclarativeBase):
+    """
+    Базовый класс для модулей
+    """    
+    pass
 
 
 def create_async_session() -> async_sessionmaker[AsyncSession]:
@@ -35,6 +41,3 @@ def create_async_session() -> async_sessionmaker[AsyncSession]:
         bind=engine, class_=AsyncSession, expire_on_commit=False
     )
     return SessionLocal
-
-#  Создает базовый класс для всех моделей таблиц
-Base = declarative_base()
