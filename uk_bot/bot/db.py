@@ -4,7 +4,6 @@
 Почта: epoy74@gmail.com
 """
 
-from typing import Any
 
 from config import load_bot_env
 from sqlalchemy.ext.asyncio import (
