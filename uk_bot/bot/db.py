@@ -5,6 +5,8 @@
 """
 
 
+from typing import Any, AsyncGenerator
+
 from config import load_bot_env
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
@@ -28,7 +30,7 @@ class Base(DeclarativeBase):
     pass
 
 
-def create_async_session() -> async_sessionmaker[AsyncSession]:
+async def create_async_session()-> AsyncGenerator[AsyncSession, Any]:
     """
     Создает асинхронный движок и фабрику сессий для работы с базой данных.
     """
@@ -39,9 +41,7 @@ def create_async_session() -> async_sessionmaker[AsyncSession]:
     SessionLocal = async_sessionmaker(
         bind=engine, class_=AsyncSession, expire_on_commit=False
     )
-    return SessionLocal
-
-
-# async def get_session():
-#     async with create_async_session()  as session:
-#         yield session
+    async with SessionLocal() as session:
+        
+        yield session
+    # return SessionLocal
